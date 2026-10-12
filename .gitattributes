@@ -1,0 +1,29 @@
+# Normalize line endings in the repo (LF). Git converts on checkout on Windows via `core.autocrlf`.
+* text=auto eol=lf
+
+# Shell entrypoints must stay LF or Linux containers break
+*.sh text eol=lf
+docker/** text eol=lf
+
+# Docker
+Dockerfile text eol=lf
+docker-compose*.yml text eol=lf
+.dockerignore text eol=lf
+
+# Source
+*.php text eol=lf
+*.py text eol=lf
+*.{js,jsx,ts,tsx,mjs,cjs} text eol=lf
+*.{json,yml,yaml,toml,md,mdc} text eol=lf
+*.{css,scss,html,vue} text eol=lf
+*.{env,example,in,ini} text eol=lf
+
+# Windows-only scripts may use CRLF locally if preferred
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaries
+*.{png,jpg,jpeg,gif,ico,webp,svg} binary
+*.{woff,woff2,eot,ttf,otf} binary
+*.{pdf,zip,gz,tar,7z,rar} binary

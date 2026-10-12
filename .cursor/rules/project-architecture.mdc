@@ -29,3 +29,8 @@ When adding or changing behavior:
 
 - Minimal diffs; match existing patterns in each folder.
 - Do not add Inertia or cookie-based Sanctum SPA flows unless explicitly requested.
+
+## Docker
+
+- Dev runs via root `docker-compose.yml` (Postgres + backend + frontend). Prefer `docker compose run --rm backend` for artisan/composer, not host PHP.
+- MCP uses Compose profile `mcp` and stdio (`run --rm -i mcp`).

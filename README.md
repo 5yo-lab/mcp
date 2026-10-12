@@ -50,11 +50,13 @@ docker compose logs -f backend frontend
 | MCP image | `docker compose --profile mcp build mcp` | Build succeeds |
 | MCP tool | `docker compose --profile mcp run --rm -i mcp` | Server starts (stdio; Ctrl+C to exit) |
 
-6. If shell entrypoints fail with `$'\r'`, re-normalize line endings after pulling `.gitattributes`:
+6. If backend/frontend exit with `exec ... docker-entrypoint.sh: no such file or directory`, the entrypoint script likely has **Windows CRLF** line endings. Re-normalize and rebuild:
 
 ```powershell
 git add --renormalize .
 git status
+docker compose build --no-cache backend frontend
+docker compose up -d
 ```
 
 ## Quick start
