@@ -18,21 +18,22 @@ frontend/    Vite + React SPA
 mcp/         Python MCP server (stdio for Cursor)
 ```
 
-## Local development (target)
+## Development (Docker only)
 
-```bash
-# Backend
-cd backend && cp .env.example .env && composer install && php artisan migrate
+Host machine does not need PHP, Node, or Python. Use Compose from repo root.
 
-# Frontend
-cd frontend && cp .env.example .env && npm install && npm run dev
-
-# MCP (from repo root or mcp/)
-cd mcp && uv sync  # or pip install -e .
-# Configure CURSOR MCP to run the server entrypoint (see mcp/README.md when present)
+```powershell
+copy .env.example .env
+sh scripts/bootstrap.sh   # first time: Laravel + React into backend/ & frontend/
+docker compose up          # postgres + backend + frontend
 ```
 
-Environment variables: each app has its own `.env`. Document new vars in that app’s `.env.example`. Never commit secrets.
+- **Postgres**: service `postgres`; credentials in root `.env` (`POSTGRES_*`).
+- **Backend**: `docker compose run --rm backend php artisan …` / `composer …`
+- **Frontend**: Vite on port `5173`; `VITE_API_URL` in root `.env` (browser → `localhost:8000`).
+- **MCP**: `docker compose --profile mcp run --rm -i mcp` — see `mcp/README.md` for Cursor config.
+
+`backend/.env` must use `DB_HOST=postgres` for in-container runs. Document new vars in `.env.example` files. Never commit secrets.
 
 ## Workflows (skills)
 
