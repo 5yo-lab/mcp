@@ -1,0 +1,28 @@
+---
+description: Python MCP server — tools, schemas, Laravel HTTP client
+globs: mcp/**/*.py
+alwaysApply: false
+---
+
+# Python MCP
+
+## Role
+
+- Expose **tools** for Cursor/agents; implement handlers that call Laravel API with **Bearer token** from environment.
+- Business authority stays in Laravel; MCP validates shape and handles transport errors.
+
+## Implementation
+
+- Use official MCP Python SDK; one logical tool per module or clear registry.
+- Typed inputs (Pydantic or equivalent); document required env: `LARAVEL_API_URL`, `LARAVEL_API_TOKEN`.
+- HTTP client: timeouts (e.g. 30s), raise structured errors for the model; no secrets in logs or tool descriptions.
+
+## Safety
+
+- Tools must not expose broad "run arbitrary query" unless explicitly designed and authorized.
+- Prefer idempotent reads; writes document side effects; consider idempotency keys for agent-retried calls.
+
+## Testing
+
+- Unit tests with mocked HTTP for each tool handler.
+- Optional contract test against Laravel feature tests or OpenAPI when available.

@@ -1,0 +1,34 @@
+---
+description: Shared API JSON conventions across Laravel, React, MCP
+globs: backend/routes/**,backend/app/Http/Resources/**,frontend/src/api/**,mcp/**/client*.py,mcp/**/clients/**
+alwaysApply: false
+---
+
+# API contracts
+
+## Naming
+
+- Laravel Resources emit **snake_case** JSON keys.
+- Frontend may convert to camelCase in one boundary layer (client or mappers)—stay consistent project-wide.
+
+## Versioning
+
+- Prefix routes with `/api/v1`. Breaking changes → new version or explicit migration plan.
+
+## Errors
+
+Use a stable shape, for example:
+
+```json
+{ "message": "Human-readable summary", "errors": { "field": ["..."] } }
+```
+
+HTTP status: 401 unauthenticated, 403 forbidden, 422 validation, 404 not found.
+
+## Pagination
+
+When listing: agree on query params (`page`, `per_page` or cursor) and response meta; implement once in Laravel and mirror in TS types.
+
+## MCP
+
+- Tool handlers call the same REST endpoints as the SPA where possible—no parallel undocumented APIs.

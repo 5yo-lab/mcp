@@ -1,0 +1,31 @@
+---
+description: Monorepo architecture — Laravel API, React SPA, Python MCP (API tokens)
+alwaysApply: true
+---
+
+# Project architecture
+
+## Ownership
+
+- **backend/** — Source of truth: models, policies, validation, persistence, `/api` routes.
+- **frontend/** — UI only; no direct DB; use API client + Bearer token storage strategy documented in frontend README.
+- **mcp/** — Agent tools; orchestration and HTTP calls to Laravel; do not duplicate business rules.
+
+## Auth
+
+- **API tokens only** (Sanctum personal access tokens or service tokens). React sends `Authorization: Bearer <token>`.
+- MCP uses env-configured service token with minimal scopes.
+- Never commit tokens; never put real secrets in MCP tool descriptions or rules.
+
+## Cross-layer changes
+
+When adding or changing behavior:
+
+1. Laravel API + tests first (or in same PR).
+2. Update frontend API client/types if the contract changed.
+3. Update MCP tools only if agents need the capability.
+
+## Scope
+
+- Minimal diffs; match existing patterns in each folder.
+- Do not add Inertia or cookie-based Sanctum SPA flows unless explicitly requested.

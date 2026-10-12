@@ -1,0 +1,36 @@
+---
+description: Standalone React SPA — API client, token auth, feature folders
+globs: frontend/**/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+
+# React frontend
+
+## App type
+
+- Standalone **Vite + React** SPA; routing in React (e.g. React Router).
+- All data via **HTTP JSON** to Laravel `/api/v1`; no Inertia.
+
+## Auth
+
+- Store API token per project convention (prefer memory + secure persistence pattern documented in README; avoid logging tokens).
+- Attach `Authorization: Bearer <token>` on API requests via shared client (axios/fetch wrapper).
+
+## Organization
+
+- Feature folders: `features/<name>/` (components, hooks, api).
+- Shared UI in `components/`; API client and types in `api/` or `lib/api/`.
+- Loading, error, and empty states for async views.
+
+## API errors
+
+- Map Laravel validation (`errors` object) to form fields; show generic message for 401/403/500.
+
+## Example
+
+```typescript
+// ✅ Central client
+api.get('/v1/things', { headers: { Authorization: `Bearer ${token}` } });
+```
+
+Do not duplicate server validation rules in the client beyond UX hints; server remains authoritative.

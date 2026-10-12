@@ -1,0 +1,39 @@
+---
+description: Laravel API conventions (token auth, resources, policies)
+globs: backend/**/*.php
+alwaysApply: false
+---
+
+# Laravel API
+
+## Structure
+
+- Routes in `routes/api.php` under `/api/v1` prefix.
+- Controllers stay thin: **Form Requests** for validation, **Policies** for authorization, **Actions/Services** for business logic.
+- JSON shape via **API Resources**; consistent error responses.
+
+## Auth
+
+- Protect routes with `auth:sanctum` (or project middleware for Bearer tokens).
+- Issue/revoke tokens via documented endpoints; abilities/scopes when enforcing fine-grained access.
+
+## Data
+
+- Migrations + factories for new models; eager-load relationships in list endpoints to avoid N+1.
+- No raw SQL with string interpolation; use Eloquent or query builder with bindings.
+
+## Testing
+
+- Feature tests for API routes (auth, validation, authorization, happy path).
+- Assert JSON structure and status codes, not full HTML.
+
+## Example
+
+```php
+// ✅ Route → FormRequest → Policy → Action → Resource
+public function store(StoreThingRequest $request, StoreThing $action): ThingResource
+{
+    $this->authorize('create', Thing::class);
+    return new ThingResource($action->execute($request->validated()));
+}
+```

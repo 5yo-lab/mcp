@@ -1,0 +1,77 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE / editor (keep shared Cursor rules; ignore local IDE state)
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+auth.json
+
+# Local PDF reference material (assessments, specs); not source
+*.pdf
+
+# --- Laravel (backend/) ---
+backend/vendor/
+backend/node_modules/
+backend/public/build/
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/storage/pail/
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitignore
+backend/.phpunit.result.cache
+backend/.phpunit.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/npm-debug.log
+backend/yarn-error.log
+
+# --- React (frontend/) ---
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+frontend/coverage/
+frontend/*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# --- Python MCP (mcp/) ---
+mcp/.venv/
+mcp/venv/
+mcp/env/
+mcp/.env
+mcp/__pycache__/
+mcp/**/__pycache__/
+mcp/*.py[cod]
+mcp/**/*.py[cod]
+mcp/.pytest_cache/
+mcp/.mypy_cache/
+mcp/.ruff_cache/
+mcp/*.egg-info/
+mcp/.eggs/
+mcp/dist/
+mcp/build/
+mcp/.coverage
+mcp/htmlcov/
+mcp/.uv/
+
+# Logs & temp
+*.log
+.cache/
+tmp/
+temp/
