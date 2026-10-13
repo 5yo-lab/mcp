@@ -19,6 +19,8 @@ class AdsSeedCommand extends Command
 
     public const V0_TEST_API_KEY = 'ghk_v0_contract_test_key_00000001';
 
+    public const MANAGE_API_KEY = 'ghk_dev_manage_key_000000001';
+
     public function handle(): int
     {
         mt_srand(42);
@@ -86,11 +88,16 @@ class AdsSeedCommand extends Command
             ApiKey::query()->create([
                 'prefix' => ApiKey::prefixFromPlainKey(self::V0_TEST_API_KEY),
                 'key_hash' => ApiKey::hashPlainKey(self::V0_TEST_API_KEY),
+                'scopes' => ['search:read'],
+            ]);
+            ApiKey::query()->create([
+                'prefix' => ApiKey::prefixFromPlainKey(self::MANAGE_API_KEY),
+                'key_hash' => ApiKey::hashPlainKey(self::MANAGE_API_KEY),
                 'scopes' => ['search:read', 'keys:manage'],
             ]);
         });
 
-        $this->info('Seeded '.Brand::count().' brands, '.Ad::count().' ads, 1 API key for v0 tests.');
+        $this->info('Seeded '.Brand::count().' brands, '.Ad::count().' ads, 2 API keys (search + manage).');
 
         return self::SUCCESS;
     }

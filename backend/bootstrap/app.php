@@ -21,11 +21,27 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'api.key' => \App\Http\Middleware\AuthenticateApiKey::class,
+            'api.key' => \App\Http\Middleware\ResolveApiKey::class,
+            'api.rate' => \App\Http\Middleware\RateLimitApiKey::class,
+            'api.bill' => \App\Http\Middleware\EnforceQuotaAndBill::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, Request $request) {
+            if (! $request->is('api/v1/*')) {
+                return null;
+            }
+
+            return \App\Http\Responses\ApiErrorResponse::make(
+                \App\Support\ApiErrorCode::NotFound,
+                'Route not found.',
+                'Check the API path and version.',
+                false,
+                404,
+            );
+        });
     })->create();

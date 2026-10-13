@@ -1,120 +1,50 @@
-# Full-stack API + React + MCP
+# GetHookd assessment — API + React + MCP
 
-Laravel JSON API, standalone React SPA, Python MCP — **API tokens**, **PostgreSQL**, all via **Docker**.
-
-## Prerequisites
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Compose v2)
-- No local PHP, Node, or Python required for day-to-day dev
-- **Bootstrap**: POSIX `sh` (Git Bash on Windows, or WSL). Optional: `.\scripts\bootstrap.ps1` delegates to `sh`.
-
-## Verify Docker (test flow)
-
-1. Start **Docker Desktop** and wait until it is running.
-2. From repo root:
+## One command (stack)
 
 ```powershell
-cd C:\Users\petyo\Projects\mcp
-docker version
-docker compose version
 copy .env.example .env
-docker compose build
-docker compose up -d postgres
-docker compose ps
+docker compose up -d --build
+docker compose exec backend php artisan migrate --force
+docker compose exec backend php artisan ads:seed
 ```
 
-3. Postgres should show **healthy**. Then bootstrap apps (first time only):
+Open **http://localhost:5173** (developer page) and **http://localhost:8000/api/v1/health**.
+
+Copy `frontend/.env.example` to `frontend/.env` for manage/MCP keys in the UI.
+
+## Live ingest
 
 ```powershell
-sh scripts/bootstrap.sh
+docker compose exec backend php artisan ads:ingest
 ```
 
-4. Start the full stack:
+## Tests
 
 ```powershell
-docker compose up -d
-docker compose ps
-docker compose logs -f backend frontend
+docker compose exec backend php artisan test
 ```
 
-**Stopping:** use `docker compose down`. If you run `docker compose up` in the foreground (no `-d`), **Ctrl+C** stops the dev servers (Vite + `artisan serve`) — that is normal, but Compose may exit with code 130 and show a “fix this compose error” hint from Docker Desktop. That is **not** a failed bootstrap; use detached mode or `docker compose down` to avoid it.
+## MCP (Cursor)
 
-5. **Checks**
-
-| Check | Command / action | Expected |
-|-------|------------------|----------|
-| Postgres | `docker compose exec postgres pg_isready -U app -d app` | `accepting connections` |
-| Backend | Open http://localhost:8000 | Laravel welcome (after bootstrap) |
-| Frontend | Open http://localhost:5173 | Vite React page |
-| Backend logs | `docker compose logs backend --tail 50` | `Server running on http://0.0.0.0:8000` |
-| MCP image | `docker compose --profile mcp build mcp` | Build succeeds |
-| MCP tool | `docker compose --profile mcp run --rm -i mcp` | Server starts (stdio; Ctrl+C to exit) |
-
-6. If backend/frontend exit with `exec ... docker-entrypoint.sh: no such file or directory`, the entrypoint script likely has **Windows CRLF** line endings. Re-normalize and rebuild:
+Set `MCP_LARAVEL_API_TOKEN` in root `.env` to a `search:read` key, then:
 
 ```powershell
-git add --renormalize .
-git status
-docker compose build --no-cache backend frontend
-docker compose up -d
-```
-
-## Quick start
-
-```powershell
-cd C:\Users\petyo\Projects\mcp
-copy .env.example .env
-sh scripts/bootstrap.sh
-docker compose up
-```
-
-| Service   | URL |
-|-----------|-----|
-| API       | http://localhost:8000 |
-| React     | http://localhost:5173 |
-| Postgres  | `localhost:5432` (user/db from `.env`) |
-
-After Laravel is installed, set `backend/.env` `DB_*` to match Compose (`DB_HOST=postgres` when running in container; use `postgres` not `127.0.0.1` inside backend container).
-
-## Commands
-
-```powershell
-# Build / rebuild images
-docker compose build
-
-# Stack (postgres + backend + frontend)
-docker compose up -d
-docker compose logs -f
-
-# Backend one-off (artisan, composer, tests)
-docker compose run --rm backend php artisan migrate
-docker compose run --rm backend composer require laravel/sanctum
-
-# MCP stdio (Cursor) — see mcp/README.md
 docker compose --profile mcp run --rm -i mcp
-
-# Tear down (keep DB volume)
-docker compose down
-
-# Tear down including DB data
-docker compose down -v
 ```
 
-## Layout
+See `mcp/README.md` and the developer page “Connect your AI tool” panel.
 
-```text
-backend/          Laravel (created by bootstrap)
-frontend/         Vite + React (created by bootstrap)
-mcp/              Python MCP server
-docker/           Dockerfiles and entrypoints for backend & frontend
-docker-compose.yml
-AGENTS.md         Agent / architecture guide
-```
+## Seeded keys
 
-## Next steps after Docker
+| Key                                 | Scopes                   |
+| ----------------------------------- | ------------------------ |
+| `ghk_v0_contract_test_key_00000001` | search:read              |
+| `ghk_dev_manage_key_000000001`      | search:read, keys:manage |
 
-1. Sanctum + `/api/v1` routes in Laravel (inside container)
-2. React API client + Bearer token
-3. Issue service token → `MCP_LARAVEL_API_TOKEN` in root `.env`
+## Docs
 
-See `AGENTS.md` and `.cursor/skills/`.
+- `DESIGN.md` — architecture trade-offs
+- `MCP_EVAL.md` — model evaluation
+- `AI_NOTES.md` — how you used AI
+- `backend/docs/CURSOR_PAGINATION.md` — cursor semantics under ingest

@@ -68,6 +68,36 @@ paths:
       responses:
         '200':
           description: Niche slugs
+  /api/v1/ads/{id}:
+    get:
+      summary: Get ad by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ad detail
+        '404':
+          description: Not found
+  /api/v1/keys:
+    get:
+      summary: List API keys
+      security:
+        - bearerAuth: []
+    post:
+      summary: Create API key
+      security:
+        - bearerAuth: []
+  /api/v1/usage:
+    get:
+      summary: Billable usage this month
+      security:
+        - bearerAuth: []
 components:
   securitySchemes:
     bearerAuth:

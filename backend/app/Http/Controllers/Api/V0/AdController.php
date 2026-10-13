@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V0;
 use App\Enums\AdFormat;
 use App\Enums\AdStatus;
 use App\Http\Controllers\Controller;
-use App\Models\ApiKey;
 use App\Support\NicheCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,11 +14,6 @@ class AdController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
-        $apiKey = $request->query('api_key');
-        if (! is_string($apiKey) || ApiKey::findValidByPlainKey($apiKey) === null) {
-            return response()->json(['error' => 'Invalid request'], 400);
-        }
-
         $query = DB::table('ads')
             ->join('brands', 'ads.brand_id', '=', 'brands.id')
             ->select('ads.*', 'brands.name as brand_name');
