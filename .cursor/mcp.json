@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "gethookd-ads": {
+      "command": "docker",
+      "args": [
+        "compose",
+        "-f",
+        "C:\\Users\\petyo\\Projects\\mcp\\docker-compose.yml",
+        "--profile",
+        "mcp",
+        "run",
+        "--rm",
+        "-i",
+        "mcp"
+      ],
+      "env": {
+        "LARAVEL_API_URL": "http://backend:8000/api/v1",
+        "LARAVEL_API_TOKEN": "ghk_v0_contract_test_key_00000001"
+      }
+    }
+  }
+}

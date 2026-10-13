@@ -19,5 +19,3 @@ Ship `/api/v2` with migration guide; keep v1 until clients move. OpenAPI + contr
 
 1. **Offset-free search index:** Composite indexes on `(niche, status, start_date, id)` and impression sort keys; consider Postgres partitioning by niche or date.
 2. **Ingest write path:** Move live ingest to queue/worker; avoid synchronous rank updates per brand at 110M scale.
-
-Next steps: read replicas for search, precomputed brand impression leaders for analytics queries.

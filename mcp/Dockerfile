@@ -13,9 +13,8 @@ ENV PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /app
 
-COPY pyproject.toml ./
-RUN uv sync --no-dev
-
+COPY pyproject.toml README.md ./
 COPY app ./app
+RUN uv sync --no-dev
 
 CMD ["uv", "run", "python", "-m", "app"]

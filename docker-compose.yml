@@ -64,7 +64,7 @@ services:
       - mcp_venv:/app/.venv
     environment:
       LARAVEL_API_URL: http://backend:8000/api/v1
-      LARAVEL_API_TOKEN: ${MCP_LARAVEL_API_TOKEN:-}
+      LARAVEL_API_TOKEN: ${MCP_LARAVEL_API_TOKEN:-${LARAVEL_API_TOKEN:-}}
     depends_on:
       - backend
     stdin_open: true

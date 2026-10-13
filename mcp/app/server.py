@@ -1,18 +1,21 @@
 import json
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from app.client import LaravelApiError, compact_ad, request
 
-mcp = FastMCP("gethookd-ads")
+mcp = MCPServer("gethookd-ads")
 
 # ~400–600 chars budget per ad in list tools; full detail via get_ad.
 
 
 @mcp.tool()
 def list_niches() -> str:
-    """List valid niche slugs and display names. Call this before search_ads when filtering by niche."""
+    """Return valid niche slugs (e.g. skincare, pet-supplies) and display names.
+
+    There is no slug beauty — map colloquial terms using this list (beauty → skincare and/or haircare;
+    pets → pet-supplies). Call before search_ads when the user names a category in plain English or the slug is uncertain."""
     try:
         payload = request("GET", "/niches")
     except LaravelApiError as e:
@@ -31,7 +34,12 @@ def search_ads(
     cursor: str | None = None,
     per_page: int = 10,
 ) -> str:
-    """Search ads via v1 API. Use list_niches for slug values. sort: newest|impressions. Use cursor from meta.next_cursor for more."""
+    """Search ads via v1 API.
+
+    niche must be an exact slug from list_niches — never beauty, pets, or a display name like Pet Supplies.
+    If the user uses colloquial language or you have not called list_niches yet, call list_niches first.
+    sort: newest|impressions. impression_rank is within one brand only, not comparable across brands.
+    Use meta.next_cursor for more results; use get_ad(ad_id) for full body_text."""
     params: dict[str, Any] = {"sort": sort, "per_page": min(max(per_page, 1), 25)}
     if q:
         params["q"] = q

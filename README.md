@@ -4,14 +4,16 @@
 
 ```powershell
 copy .env.example .env
+copy frontend\.env.example frontend\.env
 docker compose up -d --build
 docker compose exec backend php artisan migrate --force
 docker compose exec backend php artisan ads:seed
+docker compose restart frontend
 ```
 
 Open **http://localhost:5173** (developer page) and **http://localhost:8000/api/v1/health**.
 
-Copy `frontend/.env.example` to `frontend/.env` for manage/MCP keys in the UI.
+`frontend/.env.example` contains the same seeded keys as `ads:seed` (safe for local review). Copy to `frontend/.env` as above so the dev UI and MCP panel work without creating keys manually.
 
 ## Live ingest
 
