@@ -20,6 +20,7 @@ auth.json
 
 # Local PDF reference material (assessments, specs); not source
 *.pdf
+*.txt
 
 # --- Laravel (backend/) ---
 backend/vendor/

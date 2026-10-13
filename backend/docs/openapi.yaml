@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: GetHookd Assessment API
+  version: 1.0.0
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+  /api/v1/ads:
+    get:
+      summary: Search ads (v1)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+        - in: query
+          name: niche
+          schema:
+            type: string
+          description: One or more niche slugs (comma-separated)
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [image, video, carousel]
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, inactive]
+        - in: query
+          name: started_after
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [newest, impressions]
+        - in: query
+          name: cursor
+          schema:
+            type: string
+        - in: query
+          name: per_page
+          schema:
+            type: integer
+            maximum: 100
+      responses:
+        '200':
+          description: Search results
+        '401':
+          description: Unauthorized
+        '422':
+          description: Validation error
+  /api/v1/niches:
+    get:
+      summary: List niches
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Niche slugs
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
